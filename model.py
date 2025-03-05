@@ -64,3 +64,13 @@ class FCNNWithSkip(nn.Module):  # consider renaming to resnet
 
     def forward(self, x):
         return self.apply(x)
+
+
+class fd_stencil():
+    def __init__(self, stencil_size):
+        self.stencil_size = stencil_size
+        self.stencil = torch.randn(stencil_size)
+
+    def apply(self, x):
+        # apply stencil as 1d convolution with periodic boundary conditions
+        return torch.nn.functional.conv1d(x, self.stencil.view(1, 1, -1), padding=self.stencil_size//2, padding_mode='circular')
